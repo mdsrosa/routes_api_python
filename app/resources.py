@@ -45,7 +45,7 @@ class RoutesAPI(Resource):
         except sqlalchemy.exc.IntegrityError as e:
             return {'error': 'Route already exists.'}, 400
 
-        return {'route': marshal(route_object, route_fields)}, 201
+        return {'route': marshal(Route.query.get(route_object.pk), route_fields)}, 201
 
 
 class RouteAPI(Resource):
