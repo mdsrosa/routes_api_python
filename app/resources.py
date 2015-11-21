@@ -1,6 +1,7 @@
 from flask import abort
 from flask.ext.restful import Resource, reqparse, marshal, fields
 from app.models import Route
+from app import db
 
 
 route_fields = {
@@ -28,6 +29,20 @@ class RouteListAPI(Resource):
     def get(self):
         routes = Route.query.all()
         return {'routes': [marshal(route, route_fields) for route in routes]}
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        route = {
+            'origin_point': args.get('origin_point'),
+            'destination_point': args.get('destination_point'),
+            'distance': args.get('distance')
+        }
+
+        route_object = Route(**route)
+        db.session.add(route_object)
+        db.session.commit()
+
+        return {'route': marshal(route_object, route_fields)}
 
 
 class RouteAPI(Resource):
