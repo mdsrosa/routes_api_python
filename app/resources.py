@@ -1,14 +1,16 @@
 from flask import abort
 from flask.ext.restful import Resource, reqparse, marshal, fields
+from flask.ext.sqlalchemy import sqlalchemy
 from app.models import Route
+from app.fields import integer_field, float_field
 from app import db
 
 
 route_fields = {
-    'uri': fields.Url('route'),
     'origin_point': fields.String,
     'destination_point': fields.String,
-    'distance': fields.Integer
+    'distance': fields.Integer,
+    'uri': fields.Url('route'),
 }
 
 
@@ -16,13 +18,11 @@ class RoutesAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('origin_point', type=str, required=True,
-                                   help='No origin_point provided',
                                    location='json')
         self.reqparse.add_argument('destination_point', type=str,
-                                   required=True, help='No destination_point provided', location='json')
-        self.reqparse.add_argument('distance', type=int, required=True,
-                                   help='No distance provided',
-                                   location='json')
+                                   required=True, location='json')
+        self.reqparse.add_argument('distance', type=integer_field,
+                                   required=True, location='json')
 
         super(RoutesAPI, self).__init__()
 
@@ -38,11 +38,14 @@ class RoutesAPI(Resource):
             'distance': args.get('distance')
         }
 
-        route_object = Route(**route)
-        db.session.add(route_object)
-        db.session.commit()
+        try:
+            route_object = Route(**route)
+            db.session.add(route_object)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            return {'error': 'Route already exists.'}, 400
 
-        return {'route': marshal(route_object, route_fields)}
+        return {'route': marshal(route_object, route_fields)}, 201
 
 
 class RouteAPI(Resource):
@@ -51,7 +54,7 @@ class RouteAPI(Resource):
         self.reqparse.add_argument('origin_point', type=str, location='json')
         self.reqparse.add_argument('destination_point', type=str,
                                    location='json')
-        self.reqparse.add_argument('distance', type=int, location='json')
+        self.reqparse.add_argument('distance', type=integer_field, location='json')
 
         super(RouteAPI, self).__init__()
 
@@ -94,16 +97,13 @@ class RouteCalculateCostAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('origin_point', type=str, required=True,
-                                   help='Origin point is required',
                                    location='json')
         self.reqparse.add_argument('destination_point', type=str,
-                                   required=True, help='Destination point is required', location='json')
-        self.reqparse.add_argument('autonomy', type=int, required=True,
-                                   help='Autonomy is required',
+                                   required=True, location='json')
+        self.reqparse.add_argument('autonomy', type=integer_field, required=True,
                                    location='json')
-        self.reqparse.add_argument('fuel_price', type=float, required=True,
-                                  help='Fuel price is required',
-                                  location='json')
+        self.reqparse.add_argument('fuel_price', type=float_field,
+                                   required=True, location='json')
 
         super(RouteCalculateCostAPI, self).__init__()
 
