@@ -28,7 +28,7 @@ api_errors = {
 
 api.errors = api_errors
 
-from app.resources import RouteListAPI, RouteAPI
+from app.resources import RoutesAPI, RouteAPI
 
-api.add_resource(RouteListAPI, '/routes', endpoint='routes')
+api.add_resource(RoutesAPI, '/routes', endpoint='routes')
 api.add_resource(RouteAPI, '/routes/<int:pk>', endpoint='route')

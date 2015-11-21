@@ -12,7 +12,7 @@ route_fields = {
 }
 
 
-class RouteListAPI(Resource):
+class RoutesAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('origin_point', type=str, required=True,
@@ -24,7 +24,7 @@ class RouteListAPI(Resource):
                                    help='No distance provided',
                                    location='json')
 
-        super(RouteListAPI, self).__init__()
+        super(RoutesAPI, self).__init__()
 
     def get(self):
         routes = Route.query.all()
