@@ -9,4 +9,3 @@ app.config.from_object('config')
 
 # database initialization
 db = SQLAlchemy(app)
-db.create_all()
