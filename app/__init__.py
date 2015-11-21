@@ -9,3 +9,5 @@ app.config.from_object('config')
 
 # database initialization
 db = SQLAlchemy(app)
+
+from app import models
