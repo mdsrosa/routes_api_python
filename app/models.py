@@ -18,11 +18,6 @@ class Route(Base):
     destination_point = db.Column(db.String(128), nullable=False)
     distance = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, origin_point, destination_point, distance):
-        self.origin_point = origin_point
-        self.destination_point = destination_point
-        self.distance = distance
-
     def __repr__(self):
         return '<Route <{0}-{1}-{2]>'.format(self.origin_pint,
                                              self.destination_point,
