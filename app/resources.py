@@ -88,3 +88,39 @@ class RouteAPI(Resource):
         db.session.delete(route)
         db.session.commit()
         return {'result': True}
+
+
+class RouteCalculateCostAPI(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('origin_point', type=str, required=True,
+                                   help='Origin point is required',
+                                   location='json')
+        self.reqparse.add_argument('destination_point', type=str,
+                                   required=True, help='Destination point is required', location='json')
+        self.reqparse.add_argument('autonomy', type=int, required=True,
+                                   help='Autonomy is required',
+                                   location='json')
+        self.reqparse.add_argument('fuel_price', type=float, required=True,
+                                  help='Fuel price is required',
+                                  location='json')
+
+        super(RouteCalculateCostAPI, self).__init__()
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        origin_point = args.get('origin_point')
+        destination_point = args.get('destination_point')
+        autonomy = args.get('autonomy')
+        fuel_price = args.get('fuel_price')
+
+        # validate origin point and destination point
+        if Route.query.filter_by(origin_point=origin_point).count() == 0:
+            return {'error': 'Origin point "%s" not found' % origin_point}
+
+        if Route.query.filter_by(destination_point=destination_point).count() == 0:
+            return {'error': 'Destination point "%s" not found' % destination_point}
+
+        cost, path = Route.calculate(origin_point, destination_point,
+                                     autonomy, fuel_price)
+        return {'cost': cost, 'path': path}
