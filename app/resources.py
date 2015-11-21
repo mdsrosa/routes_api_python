@@ -57,6 +57,34 @@ class RouteAPI(Resource):
 
     def get(self, pk):
         route = Route.query.get(pk)
-        if not route:
+        if route is None:
             abort(404)
         return {'route': marshal(route, route_fields)}
+
+    def put(self, pk):
+        route = Route.query.get(pk)
+        if route is None:
+            abort(404)
+
+        args = self.reqparse.parse_args()
+
+        if args.get('destination_point') is not None:
+            route.destination_point = args.get('destination_point')
+
+        if args.get('origin_point') is not None:
+            route.origin_point = args.get('origin_point')
+
+        if args.get('distance') is not None:
+            route.distance = args.get('distance')
+
+        db.session.commit()
+
+        return {'route': marshal(Route.query.get(pk), route_fields)}
+
+    def delete(self, pk):
+        route = Route.query.get(pk)
+        if route is None:
+            abort(404)
+        db.session.delete(route)
+        db.session.commit()
+        return {'result': True}
