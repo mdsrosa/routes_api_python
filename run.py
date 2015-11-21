@@ -1,4 +1,4 @@
 from app import app
+from config import DEBUG
 
-
-app.run(debug=True)
+app.run(debug=DEBUG)
