@@ -45,6 +45,14 @@ class RouteApiTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    def test_index_endpoint(self):
+        response = self.app.get('/')
+        expected = "Routes API Python Version :)"
+        result = response.data.decode('utf-8')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(expected, result)
+
     def test_nonexistent_endpoint(self):
         response = self.app.get('/nonexistent')
         expected = "Not found"
