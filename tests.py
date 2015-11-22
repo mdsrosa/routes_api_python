@@ -38,7 +38,7 @@ class RouteModelTestCase(unittest.TestCase):
 class RouteApiTestCase(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
-        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'test.db')
+        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'postgresql://localhost/routes_api_python_test'
         self.app = app.test_client()
         db.create_all()
 
