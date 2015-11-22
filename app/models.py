@@ -31,24 +31,26 @@ class Route(Base):
 
     @classmethod
     def calculate(cls, origin, destination, autonomy, fuel_price):
-        distance, path = cls._calculate_shortest_path(origin, destination)
-        cost = cls._calculate_cost(distance, autonomy, fuel_price)
+        distance, path = calculate_shortest_path(origin, destination)
+        cost = calculate_cost(distance, autonomy, fuel_price)
 
         return cost, ' '.join(path)
 
-    def _calculate_shortest_path(origin, destination):
-        graph = Graph()
-        routes = Route.query.all()
 
-        for route in routes:
-            graph.add_node(route.origin_point)
+def calculate_shortest_path(origin, destination):
+    graph = Graph()
+    routes = Route.query.all()
 
-        for route in routes:
-            graph.add_edge(route.origin_point,
-                           route.destination_point,
-                           route.distance)
+    for route in routes:
+        graph.add_node(route.origin_point)
 
-        return get_shortest_path(graph, origin, destination)
+    for route in routes:
+        graph.add_edge(route.origin_point,
+                       route.destination_point,
+                       route.distance)
 
-    def _calculate_cost(distance, autonomy, fuel_price):
-        return distance * fuel_price / autonomy
+    return get_shortest_path(graph, origin, destination)
+
+
+def calculate_cost(distance, autonomy, fuel_price):
+    return distance * fuel_price / autonomy
