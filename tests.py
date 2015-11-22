@@ -356,7 +356,7 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
         self.assertIn("destination_point", result)
         self.assertIn(expected, result)
 
-    def test_calculate_cost_with_nonexistent_point(self):
+    def test_calculate_cost_with_nonexistent_origin_point(self):
         data = {
             "origin_point": "Y",
             "destination_point": "A",
@@ -368,6 +368,23 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
 
         response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
         expected = "Origin point \'Y\' not found"
+        result = response.data.decode('utf-8')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(expected, result)
+
+    def test_calculate_cost_with_nonexistent_destination_point(self):
+        data = {
+            "origin_point": "A",
+            "destination_point": "X",
+            "autonomy": 10,
+            "fuel_price": 2.5
+        }
+
+        data = json.dumps(data)
+
+        response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
+        expected = "Destination point \'X\' not found"
         result = response.data.decode('utf-8')
 
         self.assertEqual(response.status_code, 400)
