@@ -9,9 +9,10 @@ import os
 import json
 import unittest
 
-from config import BASE_DIR
 from app import app, db
 from app.models import Route
+
+BASE_DIR = app.config['BASE_DIR']
 
 
 def clean_db(func):
