@@ -1,7 +1,7 @@
 # Routes API
 ###### Python version of http://github.com/mdsrosa/routes_api
 
-[![Build Status](https://travis-ci.org/mdsrosa/routes_api_python.svg)](https://travis-ci.org/mdsrosa/routes_api_python)
+[![Build Status](https://travis-ci.org/mdsrosa/routes_api_python.svg)](https://travis-ci.org/mdsrosa/routes_api_python) [![Coverage Status](https://coveralls.io/repos/mdsrosa/routes_api_python/badge.svg?branch=master&service=github)](https://coveralls.io/github/mdsrosa/routes_api_python?branch=master)
 
 API to calculate the shortest path and the cost to a given route (origin point and destination point), based on fuel price and vehicle's autonomy.
 
