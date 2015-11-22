@@ -14,6 +14,11 @@ route_fields = {
 }
 
 
+class RouteIndex(Resource):
+    def get(self):
+        return 'Routes API Python Version :)'
+
+
 class RoutesAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()

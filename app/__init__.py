@@ -28,8 +28,9 @@ api_errors = {
 
 api.errors = api_errors
 
-from app.resources import RoutesAPI, RouteAPI, RouteCalculateCostAPI
+from app.resources import RouteIndex, RoutesAPI, RouteAPI, RouteCalculateCostAPI
 
+api.add_resource(RouteIndex, '/', endpoint='routes_api_index')
 api.add_resource(RoutesAPI, '/routes', endpoint='routes')
 api.add_resource(RouteAPI, '/routes/<int:pk>', endpoint='route')
 api.add_resource(RouteCalculateCostAPI, '/routes/calculate-cost',
