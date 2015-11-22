@@ -51,6 +51,14 @@ class RouteApiTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    def test_nonexistent_endpoint(self):
+        response = self.app.get('/nonexistent')
+        expected = "Not found"
+        result = response.data.decode('utf-8')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(expected, result)
+
 
 class RoutesApiTestCase(RouteApiTestCase):
     def test_empty_database(self):
