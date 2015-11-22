@@ -25,7 +25,7 @@ class Route(Base):
     )
 
     def __repr__(self):
-        return '<Route <{0}-{1}-{2}>'.format(self.origin_point,
+        return '<Route {0}-{1}-{2}>'.format(self.origin_point,
                                              self.destination_point,
                                              self.distance)
 
