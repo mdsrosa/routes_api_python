@@ -231,6 +231,14 @@ class RoutesApiTestCase(RouteApiTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result, expected)
 
+    def test_get_nonexistent_route(self):
+        response = self.app.get('/routes/123')
+        expected = "Route not found"
+        result = response.data.decode('utf-8')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(expected, result)
+
     @clean_db
     def test_delete_route(self):
         route = Route(origin_point="A", destination_point="B", distance=10)
