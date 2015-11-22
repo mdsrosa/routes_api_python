@@ -116,10 +116,10 @@ class RouteCalculateCostAPI(Resource):
 
         # validate origin point and destination point
         if Route.query.filter_by(origin_point=origin_point).count() == 0:
-            return {'error': 'Origin point "%s" not found' % origin_point}, 400
+            return {'error': 'Origin point \'%s\' not found' % origin_point}, 400
 
         if Route.query.filter_by(destination_point=destination_point).count() == 0:
-            return {'error': 'Destination point "%s" not found' % destination_point}, 400
+            return {'error': 'Destination point \'%s\' not found' % destination_point}, 400
 
         cost, path = Route.calculate(origin_point, destination_point,
                                      autonomy, fuel_price)

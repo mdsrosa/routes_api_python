@@ -37,22 +37,24 @@ class RouteApiTestCase(unittest.TestCase):
 class RoutesApiTestCase(RouteApiTestCase):
     def test_empty_database(self):
         response = self.app.get('/routes')
-        expected = b'{\n    "routes": []\n}\n'
+        expected = '{\n"routes":[]\n}\n'
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
     @clean_db
     def test_show_all_routes(self):
         route = Route(origin_point="A", destination_point="B", distance=10)
         db.session.add(route)
         db.session.commit()
-        expected = b'{\n    "routes": [\n        {\n            "destination_point": "B",\n            "distance": 10,\n            "origin_point": "A",\n            "uri": "/routes/1"\n        }\n    ]\n}\n'
+        expected = '{\n"routes":[\n{\n"destination_point":"B",\n"distance":10,\n"origin_point":"A",\n"uri":"/routes/1"\n}\n]\n}\n'
 
         response = self.app.get('/routes')
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
     @clean_db
     def test_create_route(self):
@@ -62,12 +64,14 @@ class RoutesApiTestCase(RouteApiTestCase):
             "distance": 20
         }
         data = json.dumps(route)
-        expected = b'{\n    "route": {\n        "destination_point": "C",\n        "distance": 20,\n        "origin_point": "A",\n        "uri": "/routes/1"\n    }\n}\n'
+        expected = '{\n"route":{\n"destination_point":"C",\n"distance":20,\n"origin_point":"A",\n"uri":"/routes/1"\n}\n}\n'
 
-        response = self.app.post('/routes', data=data, content_type="application/json")
+        response = self.app.post('/routes', data=data,
+                                 content_type="application/json")
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
     @clean_db
     def test_create_route_uniqueness(self):
@@ -81,17 +85,20 @@ class RoutesApiTestCase(RouteApiTestCase):
 
         # first post
         response = self.app.post('/routes', data=data, content_type="application/json")
-        expected = b'{\n    "route": {\n        "destination_point": "C",\n        "distance": 20,\n        "origin_point": "A",\n        "uri": "/routes/1"\n    }\n}\n'
+        expected = '{\n"route":{\n"destination_point":"C",\n"distance":20,\n"origin_point":"A",\n"uri":"/routes/1"\n}\n}\n'
+
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
         # second post
         response = self.app.post('/routes', data=data, content_type="application/json")
-        expected = b'{\n    "error": "Route already exists."\n}\n'
+        expected = "Route already exists."
+        result = response.data.decode('utf-8')
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assertIn(expected, result)
 
     @clean_db
     def test_create_route_with_invalid_data(self):
@@ -104,10 +111,11 @@ class RoutesApiTestCase(RouteApiTestCase):
         data = json.dumps(route)
 
         response = self.app.post('/routes', data=data, content_type="application/json")
-        expected = b'{\n    "message": {\n        "distance": "Value \'ABC\' for field \'distance\' is not a valid integer."\n    }\n}\n'
+        expected = "Value 'ABC' for field 'distance' is not a valid integer."
+        result = response.data.decode('utf-8')
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assertIn(expected, result)
 
     @clean_db
     def test_update_route(self):
@@ -123,10 +131,12 @@ class RoutesApiTestCase(RouteApiTestCase):
 
         response = self.app.put('/routes/{}'.format(route.pk),
                                 data=data, content_type="application/json")
-        expected = b'{\n    "route": {\n        "destination_point": "B",\n        "distance": 10,\n        "origin_point": "A",\n        "uri": "/routes/1"\n    }\n}\n'
+        expected = u'{\n"route":{\n"destination_point":"B",\n"distance":10,\n"origin_point":"A",\n"uri":"/routes/1"\n}\n}\n'
+
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
     @clean_db
     def test_get_route(self):
@@ -135,16 +145,17 @@ class RoutesApiTestCase(RouteApiTestCase):
         db.session.commit()
 
         response = self.app.get('/routes/{}'.format(route.pk))
-        expected = b'{\n    "route": {\n        "destination_point": "B",\n        "distance": 10,\n        "origin_point": "A",\n        "uri": "/routes/1"\n    }\n}\n'
+        expected = '{\n"route":{\n"destination_point":"B",\n"distance":10,\n"origin_point":"A",\n"uri":"/routes/1"\n}\n}\n'
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
 
 class RouteCalculateCostApiTestCase(RouteApiTestCase):
     def setUp(self):
         app.config['TESTING'] = True
-        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'test.db')
+        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'test.d')
         self.app = app.test_client()
         db.create_all()
 
@@ -179,10 +190,11 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
 
         response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
 
-        expected = b'{\n    "cost": 6.25,\n    "path": "A B D"\n}\n'
+        expected = '{\n"cost":6.25,\n"path":"ABD"\n}\n'
+        result = response.data.decode('utf-8').replace(" ", "")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(result, expected)
 
     def test_calculate_cost_with_invalid_data(self):
         data = {
@@ -195,10 +207,11 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
         data = json.dumps(data)
 
         response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
-        expected = b'{\n    "message": {\n        "autonomy": "Value \'ABC\' for field \'autonomy\' is not a valid integer."\n    }\n}\n'
+        expected = "Value 'ABC' for field 'autonomy' is not a valid integer."
+        result = response.data.decode('utf-8')
 
-        self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, 400)
+        self.assertIn(expected, result)
 
     def test_calculate_cost_with_invalid_fuel_price_data(self):
         data = {
@@ -211,10 +224,11 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
         data = json.dumps(data)
 
         response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
-        expected = b'{\n    "message": {\n        "fuel_price": "Value \'XYZ\' for field \'fuel_price\' is not a valid float."\n    }\n}\n'
+        expected = "Value 'XYZ' for field 'fuel_price' is not a valid float."
+        result = response.data.decode('utf-8')
 
-        self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, 400)
+        self.assertIn(expected, result)
 
     def test_calculate_cost_with_missing_fields(self):
         data = {
@@ -226,10 +240,12 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
         data = json.dumps(data)
 
         response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
-        expected = b'{\n    "message": {\n        "destination_point": "Missing required parameter in the JSON body"\n    }\n}\n'
+        expected = "Missing required parameter in the JSON body"
+        result = response.data.decode('utf-8')
 
-        self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, 400)
+        self.assertIn("destination_point", result)
+        self.assertIn(expected, result)
 
     def test_calculate_cost_with_nonexistent_point(self):
         data = {
@@ -242,10 +258,11 @@ class RouteCalculateCostApiTestCase(RouteApiTestCase):
         data = json.dumps(data)
 
         response = self.app.post('/routes/calculate-cost', data=data, content_type="application/json")
-        expected = b'{\n    "error": "Origin point \\"Y\\" not found"\n}\n'
+        expected = "Origin point \'Y\' not found"
+        result = response.data.decode('utf-8')
 
-        self.assertEqual(response.data, expected)
         self.assertEqual(response.status_code, 400)
+        self.assertIn(expected, result)
 
 if __name__ == '__main__':
     unittest.main()
