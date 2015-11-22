@@ -2,12 +2,13 @@ from flask import Flask, make_response, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.restful import Api
 
+import os
+
 
 app = Flask(__name__)
-api = Api(app)
+app.config.from_object(os.environ['APP_SETTINGS'])
 
-# load configuration file
-app.config.from_object('config')
+api = Api(app)
 
 # database initialization
 db = SQLAlchemy(app)

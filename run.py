@@ -1,4 +1,3 @@
 from app import app
-from config import DEBUG
 
-app.run(debug=DEBUG)
+app.run(debug=app.config['DEBUG'])
