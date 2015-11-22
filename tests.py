@@ -5,14 +5,11 @@
     Tests for the Routes API
 """
 
-import os
 import json
 import unittest
 
 from app import app, db
 from app.models import Route
-
-BASE_DIR = app.config['BASE_DIR']
 
 
 def clean_db(func):
@@ -267,7 +264,7 @@ class RoutesApiTestCase(RouteApiTestCase):
 class RouteCalculateCostApiTestCase(RouteApiTestCase):
     def setUp(self):
         app.config['TESTING'] = True
-        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'test.d')
+        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'postgresql://localhost/routes_api_python_test'
         self.app = app.test_client()
         db.create_all()
 
