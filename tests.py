@@ -22,6 +22,24 @@ def clean_db(func):
     return inner
 
 
+class RouteModelTestCase(unittest.TestCase):
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'test.db')
+        self.model = Route
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_route_representation(self):
+        route = Route(origin_point="A", destination_point="B", distance=10)
+        expected = '<Route A-B-10>'
+
+        self.assertEqual(expected, repr(route))
+
+
 class RouteApiTestCase(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
