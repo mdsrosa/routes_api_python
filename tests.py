@@ -231,6 +231,27 @@ class RoutesApiTestCase(RouteApiTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result, expected)
 
+    @clean_db
+    def test_delete_route(self):
+        route = Route(origin_point="A", destination_point="B", distance=10)
+        db.session.add(route)
+        db.session.commit()
+
+        response = self.app.delete('/routes/{}'.format(route.pk))
+        expected = '{\n"result":true\n}\n'
+        result = response.data.decode('utf-8').replace(" ", "")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result, expected)
+
+    def test_delete_nonexistent_route(self):
+        response = self.app.delete('/routes/1234')
+        expected = "Route not found"
+        result = response.data.decode('utf-8')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(expected, result)
+
 
 class RouteCalculateCostApiTestCase(RouteApiTestCase):
     def setUp(self):
