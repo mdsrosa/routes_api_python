@@ -144,7 +144,7 @@ class RoutesApiTestCase(RouteApiTestCase):
         self.assertIn(expected, result)
 
     @clean_db
-    def test_update_route(self):
+    def test_update_route_destination_point(self):
         route = Route(origin_point="A", destination_point="C", distance=10)
         db.session.add(route)
         db.session.commit()
@@ -163,6 +163,60 @@ class RoutesApiTestCase(RouteApiTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result, expected)
+
+    @clean_db
+    def test_update_route_origin_point(self):
+        route = Route(origin_point="A", destination_point="C", distance=10)
+        db.session.add(route)
+        db.session.commit()
+
+        fields_to_update = {
+            "origin_point": "B"
+        }
+
+        data = json.dumps(fields_to_update)
+
+        response = self.app.put('/routes/{}'.format(route.pk),
+                                data=data, content_type="application/json")
+        expected = u'{\n"route":{\n"destination_point":"C",\n"distance":10,\n"origin_point":"B",\n"uri":"/routes/1"\n}\n}\n'
+
+        result = response.data.decode('utf-8').replace(" ", "")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result, expected)
+
+    @clean_db
+    def test_update_route_distance(self):
+        route = Route(origin_point="A", destination_point="C", distance=10)
+        db.session.add(route)
+        db.session.commit()
+
+        fields_to_update = {
+            "distance": 20
+        }
+
+        data = json.dumps(fields_to_update)
+
+        response = self.app.put('/routes/{}'.format(route.pk),
+                                data=data, content_type="application/json")
+        expected = u'{\n"route":{\n"destination_point":"C",\n"distance":20,\n"origin_point":"A",\n"uri":"/routes/1"\n}\n}\n'
+
+        result = response.data.decode('utf-8').replace(" ", "")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result, expected)
+
+    def test_update_nonexistent_route(self):
+        fields_to_update = {
+            "destination_point": "B"
+        }
+        data = json.dumps(fields_to_update)
+        response = self.app.put('/routes/123', data=data, content_type="application/json")
+        expected = "Route not found"
+        result = response.data.decode('utf-8')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(expected, result)
 
     @clean_db
     def test_get_route(self):
