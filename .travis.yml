@@ -12,8 +12,7 @@ before_script:
 addons:
   postgresql: "9.4.1"
 env:
-  - APP_SETTINGS=config.DevelopmentConfig
-  - DATABASE_URL=postgresql://localhost/routes_api_python_test
+  - APP_SETTINGS=config.DevelopmentConfig DATABASE_URL=postgresql://localhost/routes_api_python_test
 install: "pip install -r requirements.txt"
 script: coverage run --source app tests.py
 after_success:
