@@ -5,6 +5,8 @@
 
 API to calculate the shortest path and the cost to a given route (origin point and destination point), based on fuel price and vehicle's autonomy.
 
+**This application is live on Heroku:** https://routes-api-python-prod.herokuapp.com
+
 # Installation
 ###### **Considering you already have a Python development environment setup.**
 
@@ -17,7 +19,7 @@ $ pip install -r requirements.txt
 
 ### Running Locally
 ```bash
-$ python db.py create
+$ python manage.py db upgrade
 $ python run.py
 ```
 
@@ -30,7 +32,7 @@ This endpoint lists all routes in the database.
 #### cURL Example
 
 ```bash
-$ curl -i http://localhost:5000/routes
+$ curl -i https://routes-api-python-prod.herokuapp.com/routes
 ```
 #### Response Example
 ```bash
@@ -81,7 +83,7 @@ This endpoint returns a route.
 
 ##### cURL Example
 ```bash
-$ curl -i http://localhost:5000/routes/1
+$ curl -i https://routes-api-python-prod.herokuapp.com/routes/1
 ```
 
 ##### Response Example
@@ -109,7 +111,7 @@ Name            | Type | Description | Example
 
 ##### cURL Example
 ```bash
-$ curl -i -X POST -H "Content-Type: application/json" http://localhost:5000/routes -d '{"origin_point": "A", "destination_point": "D", "distance": 10}'
+$ curl -i -H "Content-Type: application/json" -X POST https://routes-api-python-prod.herokuapp.com/routes '{"origin_point":"A","destination_point":"D","distance":10}'
 ```
 
 ##### Response Example
@@ -137,7 +139,7 @@ Name            | Type | Description | Example
 
 ##### cURL Example
 ```bash
-$ curl -i -X PUT -H "Content-Type: application/json" http://localhost:5000/routes/1 -d '{"destination_point": "B"}'
+$ curl -i -X PUT -H "Content-Type: application/json" https://routes-api-python-prod.herokuapp.com/routes/1 -d '{"destination_point": "B"}'
 ```
 
 ##### Response Example
@@ -157,7 +159,7 @@ This endpoint deletes a route.
 
 ##### cURL Example
 ```bash
-$ curl -X DELETE http://localhost:5000/routes/1
+$ curl -X DELETE https://routes-api-python-prod.herokuapp.com/routes/1
 ```
 
 ##### Response Example
@@ -182,7 +184,7 @@ Name            | Type | Description | Example
 
 ##### cURL Example
 ```bash
-$ curl -i -H "Content-Type: application/json" http://localhost:5000/routes/calculate-cost -d '{"origin_point":"A","destination_point": "D","autonomy":10,"fuel_price":2.5}'
+$ curl -i -H "Content-Type: application/json" -X POST https://routes-api-python-prod.herokuapp.com/routes/calculate-cost -d '{"origin_point":"A","destination_point":"D","autonomy":10,"fuel_price":2.5}'
 ```
 ##### Response Example
 ```json
