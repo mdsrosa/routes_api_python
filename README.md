@@ -15,8 +15,7 @@ $ pip install -r requirements.txt
 
 ### Running Locally
 ```bash
-$ python db_create.py
-$ python db_upgrade.py
+$ python db.py create
 $ python run.py
 ```
 
@@ -29,7 +28,7 @@ This endpoint lists all routes in the database.
 #### cURL Example
 
 ```bash
-$ curl http://localhost:5000/routes
+$ curl -i http://localhost:5000/routes
 ```
 #### Response Example
 ```bash
