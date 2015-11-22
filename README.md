@@ -23,6 +23,12 @@ $ python manage.py db upgrade
 $ python run.py
 ```
 
+or, with `gunicorn`:
+
+```bash
+$ gunicorn app:app
+```
+
 # Endpoints
 
 #### GET /routes
