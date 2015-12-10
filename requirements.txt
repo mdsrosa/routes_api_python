@@ -43,3 +43,4 @@ Tempita==0.5.2
 traitlets==4.0.0
 Werkzeug==0.11.2
 wheel==0.26.0
+newrelic
