@@ -1,6 +1,6 @@
 from flask import abort
-from flask.ext.restful import Resource, reqparse, marshal, fields
-from flask.ext.sqlalchemy import sqlalchemy
+from flask_restful import Resource, reqparse, marshal, fields
+from flask_sqlalchemy import sqlalchemy
 from app.models import Route
 from app.fields import integer_field, float_field
 from app import db

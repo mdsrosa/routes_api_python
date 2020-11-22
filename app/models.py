@@ -1,6 +1,6 @@
 from app import db
 from app.dijkstra import Graph, get_shortest_path
-from flask.ext.sqlalchemy import sqlalchemy
+from flask_sqlalchemy import sqlalchemy
 
 
 class Base(db.Model):

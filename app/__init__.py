@@ -1,6 +1,6 @@
 from flask import Flask, make_response, jsonify
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.restful import Api
+from flask_sqlalchemy import SQLAlchemy
+from flask_restful import Api
 
 import os
 

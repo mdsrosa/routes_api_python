@@ -59,3 +59,9 @@ target/
 
 # Sqlite3 stuff
 *.db
+
+# VS Code
+.vscode/
+
+# Git
+tags
